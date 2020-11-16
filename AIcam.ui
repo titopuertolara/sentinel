@@ -236,11 +236,25 @@
     </property>
    </widget>
   </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>110</y>
+     <width>71</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>GPU</string>
+   </property>
+  </widget>
   <zorder>groupBox_2</zorder>
   <zorder>groupBox</zorder>
   <zorder>pushButton</zorder>
   <zorder>lineEdit</zorder>
   <zorder>label</zorder>
+  <zorder>checkBox</zorder>
  </widget>
  <resources/>
  <connections/>

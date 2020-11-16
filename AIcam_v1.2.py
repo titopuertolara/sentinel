@@ -165,6 +165,9 @@ class Ui_Form(object):
         self.label_4 = QtWidgets.QLabel(self.groupBox_2)
         self.label_4.setGeometry(QtCore.QRect(10, 90, 67, 17))
         self.label_4.setObjectName("label_4")
+        self.checkBox = QtWidgets.QCheckBox(Form)
+        self.checkBox.setGeometry(QtCore.QRect(350, 110, 71, 23))
+        self.checkBox.setObjectName("checkBox")
         self.groupBox_2.raise_()
         self.groupBox.raise_()
         self.pushButton.raise_()
@@ -189,6 +192,7 @@ class Ui_Form(object):
         self.label_3.setText(_translate("Form", "End"))
         self.label_2.setText(_translate("Form", "Start"))
         self.label_4.setText(_translate("Form", "Class"))
+        self.checkBox.setText(_translate("Form", "GPU"))
     def ai_process(self):
         
         start_t=self.timeEdit.text()
@@ -205,6 +209,10 @@ class Ui_Form(object):
         np.random.seed(42)
         out = cv2.VideoWriter('output.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_width,frame_height))
         net = cv2.dnn.readNetFromDarknet(yolo_conf, yolo_weights)
+        cuda=1;
+        if  self.checkBox.isChecked():
+            net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+            net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
         ln = net.getLayerNames()
         ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
         conf=0.5
