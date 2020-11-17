@@ -15,6 +15,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import datetime
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
 import ssl
 
 
@@ -85,18 +87,24 @@ def load_classes():
 	    classes=file.read().split("\n")
 	    return classes
 def send_email(sender,passwd,receiver,msg,pic):
-    msg=MIMEText(msg)
+
+    msg_complete=MIMEMultipart()   
+    
+    text=MIMEText(msg)
+    msg_complete.attach(text)
+    image=MIMEImage(open(pic,'rb').read(),name=os.path.basename(pic))
+    msg_complete.attach(image)
     server=smtplib.SMTP('smtp.gmail.com',587)
     context=ssl.create_default_context()
     server.ehlo()
     server.starttls(context=context)
     server.ehlo()
       
-    msg['Subject']="Alert from your Ipcam"
+    msg_complete['Subject']="Alert from your Ipcam"
     try:
         server.login(sender,passwd)
-        server.sendmail(sender,receiver,msg.as_string())
-        print("Message sent")
+        server.sendmail(sender,receiver,msg_complete.as_string())
+        print("Alert sent")
     except Exception as e:
         print(e)
 
@@ -259,16 +267,16 @@ class Ui_Form(object):
                 
                 
                 if flag==True and cont_class<=20:
-                    
-                    cv2.imwrite("detected_classes/"+class_interest+str(datetime.datetime.now())+".jpg",frame)
+                    screen_name="detected_classes/"+class_interest+str(datetime.datetime.now())+".jpg"
+                    cv2.imwrite(screen_name,frame)
                     cont_class=cont_class+1
                     print(class_interest+" detected, ..")
                     msg=class_interest+" detected at "+str(datetime.datetime.now())
-                    pic=0
+                    
                     
                     if alarm==True and istime==True:
 
-                        send_email(str(self.lineEdit_2.text()),str(self.lineEdit_3.text()),str(self.lineEdit_4.text()),msg,pic)
+                        send_email(str(self.lineEdit_2.text()),str(self.lineEdit_3.text()),str(self.lineEdit_4.text()),msg,screen_name)
                         #print("email enviado")
                         istime=False
                         email_time=time.time()
